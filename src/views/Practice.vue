@@ -59,7 +59,11 @@ export default {
   mounted(){
     this.getrandomroots()
     this.highlightFirstRoot()
-  }
+  },
+  unmounted(){
+    this.keys.highlightkey = ''
+    this.keys.highlightroot = ''
+  },
 }
 </script>
 
