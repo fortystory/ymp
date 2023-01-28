@@ -32,16 +32,24 @@ export default {
       // 判断是否输入正确 当前输入是否等于字根对应的按键
       if(this.currentinput.toUpperCase() == this.keys.wk[this.croots[0]]){
         this.croots.shift()//移除数组第一个元素
-        this.highlightFirstRoot()
+        this.highlight()
       }
       this.lastinput = this.currentinput.toUpperCase()
       this.currentinput = ''
     },
-    highlightFirstRoot:function(){
-      //还原样式
+    highlight:function(){
+      //恢复之前的高亮
+      this.keys.lhk.forEach(lhke => {
+        this.keys.hk[lhke] = false
+      });
+      this.keys.lhw.forEach(lhwe => {
+        this.keys.hw[lhwe] = false
+      });
       //更新样式
-      this.keys.highlightkey = this.keys.wk[this.croots[0]]
-      this.keys.highlightroot = this.croots[0]
+      this.keys.hk[this.keys.wk[this.croots[0]]] = true
+      this.keys.hw[this.croots[0]] = true
+      this.keys.lhk = [this.keys.wk[this.croots[0]]]
+      this.keys.lhw = [this.croots[0]]
     },
     change_practice_type:function(){
       this.getrandomroots()
@@ -58,11 +66,16 @@ export default {
   },
   mounted(){
     this.getrandomroots()
-    this.highlightFirstRoot()
+    this.highlight()
   },
   unmounted(){
-    this.keys.highlightkey = ''
-    this.keys.highlightroot = ''
+    //还原样式
+    Object.keys(this.keys.hk).forEach((key) => {
+      this.keys.hk[key] = false
+    })
+    Object.keys(this.keys.hw).forEach((key) => {
+      this.keys.hw[key] = false
+    })
   },
 }
 </script>

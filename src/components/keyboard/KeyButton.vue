@@ -14,17 +14,17 @@ export default {
 
 <template>
     <div v-if="emptykey"></div>
-    <div v-else class="buttonShell" :class="{ highlight_button: keys.highlightkey == k }">
+    <div v-else class="buttonShell" :class="{ highlight_button: keys.hk[k] }">
         <div class="keyname">{{ k }}</div>
         <div class="symbol">
             <div class="single">
-                <span v-for="(root,idx) in wr.s" :class="{ highlight: keys.highlightroot == root }">{{ root }}</span>
+                <span v-for="(root,idx) in wr.s" :class="{ highlight: keys.hw[root] }">{{ root }}</span>
             </div>
             <div class="wroot grown">
-                <span v-for="(root,idx) in wr.g" :class="{ highlight: keys.highlightroot == root }">{{ root }}</span>
+                <span v-for="(root,idx) in wr.g" :class="{ highlight: keys.hw[root] }">{{ root }}</span>
             </div>
             <div class="wroot part">
-                <span v-for="(root,idx) in wr.p" :class="{ highlight: keys.highlightroot == root }">{{ root }}</span>
+                <span v-for="(root,idx) in wr.p" :class="{ highlight: keys.hw[root] }">{{ root }}</span>
             </div>
         </div>
     </div>
