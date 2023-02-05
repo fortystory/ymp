@@ -1,6 +1,8 @@
 <!-- 整个键盘布局 -->
 <script>
+// import { ref, watch } from 'vue'
 import Keyboard from '../components/keyboard/Keyboard.vue'
+// import Toggle from '../components/ui/Toggle.vue'
 import { keysStore } from '../stores/keys'
 
 // const keyboard = require('./src/config/keyborad.config');
@@ -19,7 +21,7 @@ export default {
       lastinput:'',
       lastHighlight:'',
       practice_type:'wt_all',
-      keys:keysStore()
+      keys:keysStore(),
     }
   },
   methods:{
@@ -32,7 +34,9 @@ export default {
       // 判断是否输入正确 当前输入是否等于字根对应的按键
       if(this.currentinput.toUpperCase() == this.keys.wk[this.croots[0]]){
         this.croots.shift()//移除数组第一个元素
-        this.highlight()
+        if(this.keys.tips){
+          this.highlight()
+        }
       }
       this.lastinput = this.currentinput.toUpperCase()
       this.currentinput = ''
@@ -62,6 +66,20 @@ export default {
         [arr[randomIndex], arr[len]] = [arr[len], arr[randomIndex]];
       }
       return arr;
+    },
+    toggle:function(){//开关提示
+      this.keys.tips = !this.keys.tips
+      if(this.keys.tips){
+        this.highlight()
+      }else{
+        this.keys.lhw.forEach(lhwe => {
+          this.keys.hw[lhwe] = false
+        });
+        this.keys.lhk.forEach(lhke => {
+          this.keys.hk[lhke] = false
+        });
+      }
+      // console.log(this.keys.tips)
     },
   },
   mounted(){
@@ -104,6 +122,8 @@ export default {
         <input type="radio" id="character" value="character" v-model="practice_type" @change="change_practice_type" />
         <span>常用字练习</span>
       </label> -->
+      <!-- <Toggle :tips="keys.tips" :ontips="开启按键提示" :offtips="关闭按键提示"/>{{ keys.tips }} -->
+      <input type="button" :value="keys.tips ? '已开启提示' : '已关闭提示'" @click="toggle()" class="toggle" :class="{ toggle_off:!keys.tips }"/>
     </div>
     <div class="wrtext">
       <span v-for="r in this.croots">{{ r }}</span>
@@ -209,5 +229,17 @@ export default {
     background: #181818;
     border-color: #5D8ED8;
     color: var(--color-green);
+}
+.toggle{
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  text-align: center;
+  background-color: #181818;
+  color: var(--color-green);
+}
+.toggle_off{
+  color: #a1a1a1;
 }
 </style>
