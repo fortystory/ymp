@@ -5,11 +5,6 @@ import Keyboard from '../components/keyboard/Keyboard.vue'
 // import Toggle from '../components/ui/Toggle.vue'
 import { keysStore } from '../stores/keys'
 
-// const keyboard = require('./src/config/keyborad.config');
-// import { keyboard } from './config/keyborad.config'
-
-// console.log(keyboard)
-
 export default {
   components: {
     Keyboard
@@ -48,11 +43,9 @@ export default {
           }
         }
       }else{//汉字练习
-        console.log(this.split_key)
         if(this.currentinput.toUpperCase() == this.split_key[0]){
           let tk = this.split_key.shift()//移除数组第一个元素 按键
           let tw = this.split.shift()//移除数组第一个元素 字根
-          console.log(this.split.length)
           this.keys.hk[tk] = false
           this.keys.hw[tw] = false
           if(this.keys.tips){
@@ -107,8 +100,8 @@ export default {
     shuffle:function(arr) {
       let len = arr.length;
       while (len) {
-        let randomIndex = Math.floor(Math.random() * len--);
-        [arr[randomIndex], arr[len]] = [arr[len], arr[randomIndex]];
+        let random_inx = Math.floor(Math.random() * len--);
+        [arr[random_inx], arr[len]] = [arr[len], arr[random_inx]];
       }
       return arr;
     },
