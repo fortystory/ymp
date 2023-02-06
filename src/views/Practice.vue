@@ -21,28 +21,57 @@ export default {
       lastinput:'',
       lastHighlight:'',
       practice_type:'wt_all',
+      split:[],
+      split_key:[],
       keys:keysStore(),
+      erio:["E","R","I","O"],//前两个字根不会出现这些按键 U也不会出现,但U没有和J重复的字根
+      spr:["辶","廴"],//特殊处理这两个字根
     }
   },
   methods:{
     //获取字根或汉字并打乱顺序
     getrandomroots:function(){
-      this.croots = this.shuffle(this.keys[this.practice_type])
+      this.croots = this.shuffle(this.keys[this.practice_type])//更新练习字根或汉字
+      // this.croots = ["","⻊","","丬"];
+      if(this.practice_type == 'character'){//如果是汉字练习,会有多个字根
+        // this.croots = ["辟","这","我"];
+        this.split_root();
+      }
     },
     inputcheck:function(){
-      // console.log(this.keys.wk[this.croots[0]])
-      // 判断是否输入正确 当前输入是否等于字根对应的按键
-      if(this.currentinput.toUpperCase() == this.keys.wk[this.croots[0]]){
-        this.croots.shift()//移除数组第一个元素
-        if(this.keys.tips){
-          this.highlight()
+      if(this.practice_type != 'character'){//字根练习
+        // 判断是否输入正确 当前输入是否等于字根对应的按键
+        if(this.currentinput.toUpperCase() == this.keys.wk[this.croots[0]]){
+          this.croots.shift()//移除数组第一个元素
+          if(this.keys.tips){
+            this.highlight()
+          }
+        }
+      }else{//汉字练习
+        console.log(this.split_key)
+        if(this.currentinput.toUpperCase() == this.split_key[0]){
+          let tk = this.split_key.shift()//移除数组第一个元素 按键
+          let tw = this.split.shift()//移除数组第一个元素 字根
+          console.log(this.split.length)
+          this.keys.hk[tk] = false
+          this.keys.hw[tw] = false
+          if(this.keys.tips){
+            this.highlight()
+          }
+          if(this.split.length == 0 && this.croots.length > 0){
+            this.croots.shift()//移除数组第一个元素
+            this.split_root()
+          }
         }
       }
       this.lastinput = this.currentinput.toUpperCase()
       this.currentinput = ''
     },
-    highlight:function(){
-      //恢复之前的高亮
+    highlight:function(){//刷新高亮提示
+      if(!this.keys.tips){
+        return
+      }
+      //去掉之前的高亮
       this.keys.lhk.forEach(lhke => {
         this.keys.hk[lhke] = false
       });
@@ -50,16 +79,32 @@ export default {
         this.keys.hw[lhwe] = false
       });
       //更新样式
-      this.keys.hk[this.keys.wk[this.croots[0]]] = true
-      this.keys.hw[this.croots[0]] = true
-      this.keys.lhk = [this.keys.wk[this.croots[0]]]
-      this.keys.lhw = [this.croots[0]]
+      if(this.practice_type != 'character'){
+        this.keys.hk[this.keys.wk[this.croots[0]]] = true
+        this.keys.hw[this.croots[0]] = true
+        this.keys.lhk = [this.keys.wk[this.croots[0]]]
+        this.keys.lhw = [this.croots[0]]
+      }else{
+        this.keys.lhk = [];
+        this.keys.lhw = [];
+        this.split.forEach(sr => {
+          let tk = this.keys.wk[sr]
+          if(this.erio.includes(tk) && !this.spr.includes(sr)){
+            tk = "J"
+          }
+          this.keys.hk[tk] = true
+          this.keys.hw[sr] = true
+          this.keys.lhk.push(tk)
+          this.keys.lhw.push(sr)
+        });
+      }
     },
     change_practice_type:function(){
       this.getrandomroots()
+      this.highlight()//刷新高亮
     },
     //乱序数组,洗牌算法
-    shuffle:function (arr) {
+    shuffle:function(arr) {
       let len = arr.length;
       while (len) {
         let randomIndex = Math.floor(Math.random() * len--);
@@ -79,8 +124,23 @@ export default {
           this.keys.hk[lhke] = false
         });
       }
-      // console.log(this.keys.tips)
     },
+    split_root:function(){
+      if(this.croots.length <= 0){
+        return
+      }
+      //字根拆分提示
+      this.split = [this.keys.dic[this.croots[0]][0],this.keys.dic[this.croots[0]][1]]
+      this.split_key = [this.keys.wk[this.split[0]],this.keys.wk[this.split[1]]]
+      //处理笔画，第二个字根不会是euio
+      if(this.erio.includes(this.split_key[0]) && !this.spr.includes(this.split[0])){
+        this.split_key[0] = "J"
+      }
+      if(this.erio.includes(this.split_key[1]) && !this.spr.includes(this.split[1])){
+        this.split_key[1] = "J"
+      }
+      this.highlight()
+    }
   },
   mounted(){
     this.getrandomroots()
@@ -118,11 +178,10 @@ export default {
         <input type="radio" id="wt" value="wt_all" v-model="practice_type" @change="change_practice_type" />
         <span>全部字根练习</span>
       </label>
-      <!-- <label for="character">
+      <label for="character">
         <input type="radio" id="character" value="character" v-model="practice_type" @change="change_practice_type" />
         <span>常用字练习</span>
-      </label> -->
-      <!-- <Toggle :tips="keys.tips" :ontips="开启按键提示" :offtips="关闭按键提示"/>{{ keys.tips }} -->
+      </label>
       <input type="button" :value="keys.tips ? '已开启提示' : '已关闭提示'" @click="toggle()" class="toggle" :class="{ toggle_off:!keys.tips }"/>
     </div>
     <div class="wrtext">
@@ -130,6 +189,10 @@ export default {
     </div>
     <div class="practice_input">
       <div>
+        <!--拆分汉字列表-->
+        <span class="split" v-show="practice_type == 'character'">
+          <span v-for="rs in split"> {{ rs }} </span>
+        </span>
         <span class="lastinput">{{ lastinput }}</span>
         <input type="text" class="practice_input_box" v-model="currentinput" v-on:input="inputcheck()">
       </div>
@@ -171,6 +234,12 @@ export default {
   display: inline-block;
   font-size: 4rem;
   width: 4rem;
+}
+.split{
+  display: inline-block;
+  font-size: 4rem;
+  width: 16rem;
+  font-family: "更纱黑体 SC", xw_privateth;
 }
 .practice_input_box{
   font-size: 4rem;

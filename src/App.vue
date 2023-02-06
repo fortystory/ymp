@@ -24,9 +24,8 @@ export default defineComponent({
     <h1 class="green">逸码</h1>
     <nav>
       <RouterLink to="/">首页</RouterLink>
-      <RouterLink to="/practice/">字根练习</RouterLink>
-      <RouterLink to="/placeholder/跟打练习">跟打练习</RouterLink>
-      <RouterLink to="/placeholder/字根浏览">字根浏览</RouterLink>
+      <RouterLink to="/practice/">练习</RouterLink>
+      <RouterLink to="/placeholder/练习">跟打</RouterLink>
       <RouterLink to="/about">关于</RouterLink>
     </nav>
     <div></div><!-- 布局占位 -->
