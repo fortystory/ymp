@@ -30,6 +30,7 @@ export default {
       // this.croots = ["","⻊","","丬"];
       if(this.practice_type == 'character'){//如果是汉字练习,会有多个字根
         // this.croots = ["辟","这","我"];
+        // this.croots = ["未","末","耒"];
         this.split_root();
       }
     },
@@ -82,13 +83,12 @@ export default {
         this.keys.lhw = [];
         this.split.forEach(sr => {
           let tk = this.keys.wk[sr]
-          if(this.erio.includes(tk) && !this.spr.includes(sr)){
-            tk = "J"
-          }
-          this.keys.hk[tk] = true
           this.keys.hw[sr] = true
-          this.keys.lhk.push(tk)
           this.keys.lhw.push(sr)
+        });
+        this.split_key.forEach(tk => {
+          this.keys.lhk.push(tk)
+          this.keys.hk[tk] = true
         });
       }
     },
@@ -129,9 +129,9 @@ export default {
       if(this.erio.includes(this.split_key[0]) && !this.spr.includes(this.split[0])){
         this.split_key[0] = "J"
       }
-      if(this.erio.includes(this.split_key[1]) && !this.spr.includes(this.split[1])){
-        this.split_key[1] = "J"
-      }
+      // if(this.erio.includes(this.split_key[1]) && !this.spr.includes(this.split[1])){
+      //   this.split_key[1] = "J"
+      // }
       this.highlight()
     }
   },
