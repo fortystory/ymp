@@ -9848,7 +9848,8 @@ const store = {
     lhk:[],
     //上次高亮字根 用于恢复样式
     lhw:[],
-    tips:true,//是否开启按键提示及提示文本
+    //是否开启按键提示及提示文本
+    tips:true
 }
 export const keysStore = defineStore('keys', {
     //数据
