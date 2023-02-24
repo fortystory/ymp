@@ -129,9 +129,6 @@ export default {
       if(this.erio.includes(this.split_key[0]) && !this.spr.includes(this.split[0])){
         this.split_key[0] = "J"
       }
-      // if(this.erio.includes(this.split_key[1]) && !this.spr.includes(this.split[1])){
-      //   this.split_key[1] = "J"
-      // }
       this.highlight()
     }
   },
